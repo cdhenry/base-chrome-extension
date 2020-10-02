@@ -2,7 +2,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     devServer: {
@@ -43,8 +42,19 @@ module.exports = {
                 exclude: /node_modules/,
             },
             {
+                exclude: /node_modules/,
                 test: /\.scss$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+                use: [
+                    {
+                        loader: "style-loader", // Creates style nodes from JS strings
+                    },
+                    {
+                        loader: "css-loader", // Translates CSS into CommonJS
+                    },
+                    {
+                        loader: "sass-loader", // Compiles Sass to CSS
+                    },
+                ],
             },
             {
                 test: /\.html$/,
@@ -55,30 +65,26 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             filename: "popup.html",
-            template: "src/popup.html",
+            template: "src/public/popup.html",
             chunks: ["popup"],
         }),
         new HtmlWebpackPlugin({
             filename: "options.html",
-            template: "src/options.html",
+            template: "src/public/options.html",
             chunks: ["options"],
         }),
         new HtmlWebpackPlugin({
             filename: "foreground.html",
-            template: "src/foreground.html",
+            template: "src/public/foreground.html",
             chunks: ["foreground"],
         }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: "src/manifest.json", to: "[name].[ext]" },
-                { from: "src/background.ts", to: "[name].[ext]" },
-                { from: "src/inject-script.ts", to: "[name].[ext]" },
-                { from: "src/*.png", to: "[name].[ext]" },
+                { from: "src/public/manifest.json", to: "[name].[ext]" },
+                { from: "src/public/background.ts", to: "[name].[ext]" },
+                { from: "src/public/inject-script.ts", to: "[name].[ext]" },
+                { from: "src/public/icons/*.png", to: "[name].[ext]" },
             ],
-        }),
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css",
         }),
         new CleanWebpackPlugin(),
     ],
