@@ -22,7 +22,7 @@ yarn build
 Runs webpack and generates the minified bundles
 
 ```
-npm build:prod
+yarn build:prod
 ```
 
 ## Load extension to chrome
